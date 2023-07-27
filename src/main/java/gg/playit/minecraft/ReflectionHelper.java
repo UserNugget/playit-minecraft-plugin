@@ -15,9 +15,6 @@ public class ReflectionHelper {
     static Logger log = Logger.getLogger(ReflectionHelper.class.getName());
 
     private final Class<ChannelHandler> ServerBootstrapAcceptor;
-    private final Field SBA_childHandler;
-    private final Field SBA_childOptions;
-    private final Field SBA_childAttrs;
 
     private final Class<?> ServerConnection;
     private final Class<?> MinecraftServer;
@@ -28,16 +25,6 @@ public class ReflectionHelper {
         ServerBootstrapAcceptor = (Class<ChannelHandler>) cls(
                 "io.netty.bootstrap.ServerBootstrap$ServerBootstrapAcceptor"
         );
-        try {
-            SBA_childHandler = searchForFieldByName(ServerBootstrapAcceptor, "childHandler");
-            SBA_childHandler.setAccessible(true);
-            SBA_childOptions = searchForFieldByName(ServerBootstrapAcceptor, "childOptions");
-            SBA_childOptions.setAccessible(true);
-            SBA_childAttrs = searchForFieldByName(ServerBootstrapAcceptor, "childAttrs");
-            SBA_childAttrs.setAccessible(true);
-        } catch (Throwable throwable) {
-            throw new IllegalStateException("failed to get fields", throwable);
-        }
         ServerConnection = cls("net.minecraft.server.network.ServerConnection");
         MinecraftServer = cls("net.minecraft.server.MinecraftServer");
         CraftServer = cls(
@@ -100,8 +87,10 @@ public class ReflectionHelper {
 
     public ChannelHandler findChildHandler(ChannelHandler serverAcceptor) {
         try {
-            return (ChannelHandler) SBA_childHandler.get(serverAcceptor);
-        } catch (IllegalAccessException error) {
+            Field childHandler = searchForFieldByName(ServerBootstrapAcceptor, "childHandler");
+            childHandler.setAccessible(true);
+            return (ChannelHandler) childHandler.get(serverAcceptor);
+        } catch (NoSuchFieldException | IllegalAccessException error) {
             log.warning("failed to get childHandler, error: " + error);
             return null;
         }
@@ -109,8 +98,10 @@ public class ReflectionHelper {
 
     public Map.Entry<ChannelOption<Object>, Object>[] findChildOptions(ChannelHandler serverAcceptor) {
         try {
-            return (Map.Entry<ChannelOption<Object>, Object>[]) SBA_childOptions.get(serverAcceptor);
-        } catch (IllegalAccessException error) {
+            Field childOptions = searchForFieldByName(ServerBootstrapAcceptor, "childOptions");
+            childOptions.setAccessible(true);
+            return (Map.Entry<ChannelOption<Object>, Object>[]) childOptions.get(serverAcceptor);
+        } catch (NoSuchFieldException | IllegalAccessException error) {
             log.warning("failed to get childOptions, error: " + error);
             return null;
         }
@@ -118,8 +109,10 @@ public class ReflectionHelper {
 
     public Map.Entry<AttributeKey<Object>, Object>[] findChildAttrs(ChannelHandler serverAcceptor) {
         try {
-            return (Map.Entry<AttributeKey<Object>, Object>[]) SBA_childAttrs.get(serverAcceptor);
-        } catch (IllegalAccessException error) {
+            Field childAttrs = searchForFieldByName(ServerBootstrapAcceptor, "childAttrs");
+            childAttrs.setAccessible(true);
+            return (Map.Entry<AttributeKey<Object>, Object>[]) childAttrs.get(serverAcceptor);
+        } catch (NoSuchFieldException | IllegalAccessException error) {
             log.warning("failed to get childAttrs, error: " + error);
             return null;
         }
@@ -290,9 +283,6 @@ public class ReflectionHelper {
     public String toString() {
         return "ReflectionHelper{" +
                 "ServerBootstrapAcceptor=" + ServerBootstrapAcceptor +
-                ", SBA_childHandler=" + SBA_childHandler +
-                ", SBA_childOptions=" + SBA_childOptions +
-                ", SBA_childAttrs=" + SBA_childAttrs +
                 ", ServerConnection=" + ServerConnection +
                 ", MinecraftServer=" + MinecraftServer +
                 ", CraftServer=" + CraftServer +
