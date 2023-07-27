@@ -2,7 +2,6 @@ package gg.playit.minecraft;
 
 import io.netty.channel.*;
 import io.netty.util.AttributeKey;
-import org.bukkit.Bukkit;
 import org.bukkit.Server;
 
 import java.lang.reflect.*;
@@ -21,18 +20,7 @@ public class ReflectionHelper {
     private final Field SBA_childAttrs;
 
     private final Class<?> ServerConnection;
-    private final Class<?> LegacyPingHandler;
     private final Class<?> MinecraftServer;
-
-    private final Class<?> PacketSplitter;
-    private final Class<?> PacketDecoder;
-    private final Class<?> EnumProtocolDirection;
-    private final Class<?> PacketPrepender;
-    private final Class<?> PacketEncoder;
-    private final Class<?> NetworkManagerServer;
-    private final Class<?> NetworkManager;
-    private final Class<?> HandshakeListener;
-    private final Class<?> PacketListener;
 
     private final Class<?> CraftServer;
 
@@ -51,17 +39,7 @@ public class ReflectionHelper {
             throw new IllegalStateException("failed to get fields", throwable);
         }
         ServerConnection = cls("net.minecraft.server.network.ServerConnection");
-        LegacyPingHandler = cls("net.minecraft.server.network.LegacyPingHandler");
         MinecraftServer = cls("net.minecraft.server.MinecraftServer");
-        PacketSplitter = cls("net.minecraft.network.PacketSplitter");
-        PacketDecoder = cls("net.minecraft.network.PacketDecoder");
-        EnumProtocolDirection = cls("net.minecraft.network.protocol.EnumProtocolDirection");
-        PacketPrepender = cls("net.minecraft.network.PacketPrepender");
-        PacketEncoder = cls("net.minecraft.network.PacketEncoder");
-        NetworkManagerServer = cls("net.minecraft.network.NetworkManagerServer");
-        NetworkManager = cls("net.minecraft.network.NetworkManager");
-        HandshakeListener = cls("net.minecraft.server.network.HandshakeListener");
-        PacketListener = cls("net.minecraft.network.PacketListener");
         CraftServer = cls(
                 "org.bukkit.craftbukkit.CraftServer",
                 "org.bukkit.craftbukkit.v1_19_R1.CraftServer"
@@ -316,17 +294,7 @@ public class ReflectionHelper {
                 ", SBA_childOptions=" + SBA_childOptions +
                 ", SBA_childAttrs=" + SBA_childAttrs +
                 ", ServerConnection=" + ServerConnection +
-                ", LegacyPingHandler=" + LegacyPingHandler +
                 ", MinecraftServer=" + MinecraftServer +
-                ", PacketSplitter=" + PacketSplitter +
-                ", PacketDecoder=" + PacketDecoder +
-                ", EnumProtocolDirection=" + EnumProtocolDirection +
-                ", PacketPrepender=" + PacketPrepender +
-                ", PacketEncoder=" + PacketEncoder +
-                ", NetworkManagerServer=" + NetworkManagerServer +
-                ", NetworkManager=" + NetworkManager +
-                ", HandshakeListener=" + HandshakeListener +
-                ", PacketListener=" + PacketListener +
                 ", CraftServer=" + CraftServer +
                 '}';
     }
